@@ -1,0 +1,791 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#09090e">
+<meta name="description" content="RAAZ OTT — Horror, Mystery and Short Stories">
+<title>RAAZ OTT — Horror Stories</title>
+<style>
+:root{--bg:#09090e;--panel:#15151e;--red:#e50920;--muted:#aaa5b0;--line:#2b2933;--soft:#21101a}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:#fff;font-family:Arial,Helvetica,sans-serif}
+body{overflow-x:hidden}
+button,input{font:inherit}
+button{border:0;border-radius:9px;padding:11px 15px;background:var(--red);color:#fff;font-weight:700;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid #ff8190;outline-offset:2px}
+button:disabled{opacity:.55;cursor:not-allowed}
+button.secondary{background:#373641}
+header{height:58px;position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:#0d0d13;border-bottom:1px solid var(--line)}
+.logo{font-size:22px;font-weight:900;letter-spacing:2px}.logo b{color:var(--red)}
+.header-note{font-size:10px;color:#aaa;letter-spacing:.8px}
+.topnav{position:sticky;top:58px;z-index:29;display:flex;gap:8px;padding:9px 16px;background:#0d0d13;border-bottom:1px solid var(--line)}
+.topnav button{flex:1;background:#1c1c26;color:#aaa}.topnav button.active{background:var(--red);color:#fff}
+main{max-width:1100px;margin:auto;padding:18px 15px 55px}
+.hero{padding:25px 19px;border:1px solid #39232d;border-radius:16px;background:radial-gradient(circle at 85% 10%,#5b1522,#21101a 43%,#111119 82%);margin-bottom:22px}
+.kicker{font-size:10px;font-weight:800;letter-spacing:2px;color:#ff687d}
+h1{font-size:clamp(30px,7vw,48px);margin:10px 0 7px}.hero p{color:#c4bec8;line-height:1.6;font-size:13px}
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:10px;margin:22px 0 13px}
+.section-head h2{margin:4px 0;font-size:21px}.muted{color:var(--muted);font-size:11px}
+.search-wrap{display:flex;gap:8px;margin:16px 0 18px}
+.search-wrap input{width:100%;min-width:0;background:#171720;border:1px solid #34313d;color:#fff;border-radius:10px;padding:12px 13px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.series-card{min-width:0;background:#15151e;border:1px solid #302d38;border-radius:13px;overflow:hidden}
+.poster{position:relative;width:100%;aspect-ratio:2/3;overflow:hidden;background:radial-gradient(circle at 50% 25%,#6a1a2a,#21121c 48%,#050508)}
+.poster img{width:100%;height:100%;object-fit:cover;display:block;position:absolute;inset:0;z-index:2;pointer-events:none}.poster[role="button"]{cursor:pointer}.poster[role="button"]:focus-visible{outline:3px solid #ff8190;outline-offset:-3px}
+.poster-fallback{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:15px;background:linear-gradient(180deg,#120d14aa,#08080def),radial-gradient(circle at 50% 35%,#762638,#0a090d 70%)}
+.poster-fallback .symbol{font-size:45px;margin-bottom:14px;color:#e8b7bd}.poster-fallback strong{font-size:19px;letter-spacing:1px;text-transform:uppercase}.poster-fallback small{font-size:9px;letter-spacing:3px;color:#ff9aaa;margin-top:9px}
+.card-info{padding:11px}.card-info h3{margin:0 0 5px;font-size:15px}.card-info p{margin:0;color:#aaa5b0;font-size:11px;line-height:1.45;min-height:31px}
+.card-meta{display:flex;justify-content:space-between;margin-top:9px;color:#ff8291;font-size:10px}
+.card-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.small-btn{border:1px solid #393641;background:#24232d;color:#fff;padding:8px 10px;border-radius:20px;font-size:11px}
+.remove-btn{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;border:1px solid #444;background:rgba(0,0,0,.65);color:#fff;font-size:14px;cursor:pointer;z-index:2;display:flex;align-items:center;justify-content:center}
+.history-card{position:relative}
+.clear-history-btn{border:1px solid #393641;background:transparent;color:#bbb;padding:6px 12px;border-radius:20px;font-size:11px;cursor:pointer}
+.small-btn.active{background:#fff;color:#111}
+.ad-slot{border:1px dashed #3b3540;color:#77717d;min-height:58px;border-radius:10px;display:grid;place-items:center;text-align:center;font-size:10px;letter-spacing:1px;margin:20px 0;padding:10px;overflow:hidden}
+.status{font-size:12px;color:#bdb7c2;padding:12px 2px;line-height:1.5}
+#seriesView,#shortsFeedView{display:none}
+.series-banner{display:flex;gap:14px;align-items:center;background:#15151e;border:1px solid var(--line);border-radius:13px;padding:13px;margin:10px 0 15px}
+.mini-poster{width:76px;aspect-ratio:2/3;flex:none;border-radius:8px;overflow:hidden;background:linear-gradient(145deg,#641827,#09090e);display:grid;place-items:center}
+.mini-poster img{width:100%;height:100%;object-fit:cover}.mini-poster[role="button"]{cursor:pointer}
+.series-banner h2{margin:0 0 5px;font-size:19px}
+.episode-list{display:grid;gap:9px}.episode-row{display:flex;align-items:center;gap:12px;background:#15151e;border:1px solid #302d38;border-radius:10px;padding:11px;cursor:pointer}
+.ep-number{width:38px;height:38px;flex:none;border-radius:8px;background:#30202a;display:grid;place-items:center;color:#ff8495;font-weight:800}
+.ep-text{flex:1;min-width:0}.ep-text strong{font-size:13px}.ep-text p{font-size:11px;color:#aaa;margin:4px 0 0;line-height:1.4}
+.views{font-size:11px;color:#ffb0b8;margin-top:4px}.views b{color:#fff}.play-icon{color:#ff6578;font-size:19px}
+#shortsView{display:none;position:fixed;inset:58px 0 0;background:#050508;z-index:50}
+.shorts-head{height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 13px;background:#101017;border-bottom:1px solid #25232d}
+.shorts-head strong{font-size:13px}.shorts-head small{display:block;color:#ff8190;font-size:9px;letter-spacing:1px;margin-bottom:3px}
+#shortsFeed{height:calc(100% - 52px);overflow-y:auto;scroll-snap-type:y mandatory;overscroll-behavior:contain;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+#shortsFeed::-webkit-scrollbar{display:none}
+.short-item{height:calc(var(--app-height, 100vh) - 110px);height:calc(100dvh - 110px);min-height:320px;scroll-snap-align:start;scroll-snap-stop:always;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:7px 12px 12px;background:#050508}
+.short-label,.short-caption,.short-bottom{width:min(100%,430px)}
+.short-label{display:flex;justify-content:space-between;align-items:center;padding:0 2px 8px;font-size:13px}
+.short-label span{font-size:9px;color:#ff8190;letter-spacing:1px}
+.video-frame{width:min(100%,430px);height:min(calc(100% - 74px),780px);aspect-ratio:9/16;min-height:250px;background:#000;border-radius:10px;overflow:hidden}
+.video-frame iframe{width:100%;height:100%;border:0;display:block;background:#000}
+.video-empty{height:100%;display:grid;place-items:center;text-align:center;padding:20px;color:#aaa;font-size:13px;line-height:1.6}
+.short-caption{font-size:12px;color:#ddd;padding:7px 3px}
+.short-bottom{display:flex;justify-content:space-between;align-items:center;padding:2px;gap:8px}
+.short-bottom small{font-size:10px;color:#888}
+.short-actions-row{display:flex;gap:7px;align-items:center}
+.short-actions-row button{font-size:11px;padding:8px 11px}
+#shortsFeedView{max-width:760px;margin:auto;padding:12px 14px}
+#globalShortsFeed{height:calc(var(--app-height, 100vh) - 190px);height:calc(100dvh - 190px - env(safe-area-inset-bottom));min-height:320px;overflow-y:auto;scroll-snap-type:y mandatory;scroll-behavior:auto;overscroll-behavior:contain;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+#globalShortsFeed::-webkit-scrollbar{display:none}
+.global-short{height:100%;min-height:320px;scroll-snap-align:start;scroll-snap-stop:always;position:relative;background:#000;overflow:hidden;display:grid;grid-template-rows:minmax(0,1fr) auto;align-items:stretch}
+.global-short .video-frame{grid-row:1;width:100%;height:100%;min-height:0;margin:0;border-radius:0;max-width:none;aspect-ratio:auto}
+.global-short .video-frame iframe{width:100%;height:100%;display:block}
+.global-short-head{position:absolute;top:0;left:0;right:0;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(to bottom,rgba(0,0,0,.72),transparent);z-index:5;pointer-events:none}
+.global-short-head strong{font-size:14px;text-shadow:0 1px 4px #000}
+.global-short-head small{color:#ff8190;font-size:9px;letter-spacing:1px}
+.global-short-foot{grid-row:2;position:relative;left:auto;right:auto;bottom:auto;padding:8px 12px max(9px,env(safe-area-inset-bottom));background:#101017;border-top:1px solid #292631;z-index:5}
+.global-short-foot p{font-size:11px;color:#ddd;margin:0 0 4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.global-short-foot .views{margin-top:2px}
+.global-short-foot .like-row{gap:6px;margin-top:6px}
+.global-short-foot .like-row button{padding:7px 11px;font-size:11px}
+.like-row{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;align-items:center}
+.like-btn,.share-btn,.save-btn{border:1px solid #444;background:rgba(20,20,28,.9);color:#fff;padding:8px 14px;border-radius:20px;font-size:13px;cursor:pointer}
+.like-btn.liked{background:#e50920;border-color:#e50920}.save-btn.saved{background:#fff;color:#000}
+.short-actions{display:flex;gap:7px;flex-direction:column;align-items:center;position:absolute;right:10px;bottom:90px;z-index:6}
+.short-actions button{width:44px;height:44px;border-radius:50%;border:1px solid #555;background:rgba(0,0,0,.7);color:#fff;font-size:17px;padding:0}
+.short-actions small{font-size:10px;color:#fff;text-shadow:0 1px 3px #000}
+#favoritesView{display:none}
+.empty-state{padding:28px 15px;text-align:center;color:#aaa;background:#15151e;border:1px dashed #393541;border-radius:12px;font-size:13px}
+footer{text-align:center;padding:22px;color:#77717d;font-size:11px;border-top:1px solid var(--line)}
+
+/* Dedicated full-screen video player */
+.video-frame{position:relative}
+#fullPlayer{display:none;position:fixed;inset:0;z-index:200;background:#000;color:#fff}
+#fullPlayer.active{display:flex;flex-direction:column}
+.full-player-head{height:calc(54px + env(safe-area-inset-top));padding:env(safe-area-inset-top) 12px 0;flex:none;display:flex;align-items:center;gap:12px;background:#101017;border-bottom:1px solid #292631}
+.full-player-head button{width:42px;height:38px;padding:0;border-radius:9px;background:#292832;font-size:22px;line-height:1}
+.full-player-head strong{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+
+#raazShortsTip{position:fixed;top:calc(68px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:260;width:max-content;max-width:calc(100vw - 30px);padding:10px 14px;border:1px solid rgba(255,255,255,.18);border-radius:12px;background:rgba(28,27,35,.96);color:#fff;text-align:center;font-size:12px;line-height:1.5;box-shadow:0 8px 24px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .25s ease}
+#raazShortsTip.show{opacity:1}
+
+.fullscreen-icon-btn{position:absolute;right:12px;top:12px;z-index:8;width:42px;height:42px;border:1px solid rgba(255,255,255,.55);border-radius:50%;background:rgba(0,0,0,.62);color:#fff;font-size:21px;display:grid;place-items:center;cursor:pointer}
+.fullscreen-icon-btn:active{transform:scale(.94)}
+
+#fullPlayerFeed{height:calc(100% - 54px - env(safe-area-inset-top));flex:1;overflow-y:auto;overflow-x:hidden;scroll-snap-type:y mandatory;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+#fullPlayerFeed::-webkit-scrollbar{display:none}
+.full-player-item{height:100%;min-height:320px;position:relative;scroll-snap-align:start;scroll-snap-stop:always;background:#000;display:flex;flex-direction:column;overflow:hidden}
+.full-player-item .full-video-title{position:absolute;top:10px;left:12px;right:12px;z-index:2;color:#fff;font-size:14px;font-weight:700;text-shadow:0 2px 6px #000;pointer-events:none}
+.full-player-item iframe{width:100%;height:100%;min-height:0;flex:1;border:0;background:#000;display:block}
+body.player-open{overflow:hidden}
+
+
+/* Soft grey glass background inspired by the supplied reference */
+:root{--bg:#bdbdbd;--panel:rgba(235,235,235,.72);--muted:#55545a;--line:rgba(255,255,255,.45);--soft:rgba(255,255,255,.28)}
+html,body{background:linear-gradient(180deg,#c8c8c8 0%,#b8b8b8 48%,#77777a 100%);color:#17171b}
+body{background-attachment:fixed}
+header,.topnav{background:rgba(205,205,205,.88);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-color:rgba(255,255,255,.4)}
+.logo b{color:#b20e25}.header-note{color:#45444a}
+.topnav button{background:rgba(255,255,255,.38);color:#38373c}.topnav button.active{background:#333238;color:#fff}
+.hero{background:linear-gradient(135deg,rgba(245,245,245,.78),rgba(150,150,150,.58));border-color:rgba(255,255,255,.55);box-shadow:0 12px 30px rgba(0,0,0,.08)}
+.kicker{color:#55515a}.hero p,.card-info p,.muted{color:#55545a}
+.series-card,.series-banner,.episode-row,.empty-state{background:rgba(245,245,245,.62);border-color:rgba(255,255,255,.52);color:#17171b;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.card-meta,.views{color:#8d2334}.views b{color:#17171b}
+.small-btn,.clear-history-btn{background:rgba(255,255,255,.5);color:#29282d;border-color:rgba(50,50,50,.18)}
+.search-wrap input{background:rgba(255,255,255,.65);border-color:rgba(70,70,70,.2);color:#17171b}
+.ad-slot{border-color:rgba(50,50,50,.22);color:#555}footer{color:#555;border-color:rgba(255,255,255,.35)}
+#ytShowsView{display:none}.yt-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.yt-card{min-width:0;border-radius:13px;overflow:hidden;background:rgba(245,245,245,.72);border:1px solid rgba(255,255,255,.6);box-shadow:0 7px 20px rgba(0,0,0,.08)}
+.yt-thumb{width:100%;aspect-ratio:16/9;position:relative;background:#777;cursor:pointer;overflow:hidden}.yt-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.yt-thumb:after{content:"▶";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:rgba(15,15,18,.78);color:white;font-size:22px;padding-left:3px}
+.yt-card-info{padding:10px 11px 12px}.yt-card-info h3{margin:0 0 5px;font-size:14px;color:#17171b}.yt-card-info p{margin:0;color:#55545a;font-size:11px;line-height:1.45}
+.yt-play-modal{display:none;position:fixed;inset:0;z-index:300;background:rgba(25,25,28,.72);backdrop-filter:blur(13px);-webkit-backdrop-filter:blur(13px);align-items:center;justify-content:center;padding:18px}
+.yt-play-modal.active{display:flex}.yt-modal-box{width:min(900px,100%);background:rgba(220,220,220,.96);border:1px solid rgba(255,255,255,.7);border-radius:16px;overflow:hidden;box-shadow:0 22px 70px rgba(0,0,0,.38);color:#17171b}
+.yt-modal-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 13px}.yt-modal-head strong{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.yt-modal-head button{background:#343339;color:#fff;padding:8px 12px}
+.yt-modal-video{width:100%;aspect-ratio:16/9;background:#000}.yt-modal-video iframe{width:100%;height:100%;border:0;display:block}.yt-modal-desc{padding:10px 13px 13px;font-size:12px;color:#444;line-height:1.5}
+@media(min-width:650px){.yt-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:380px){.topnav{gap:5px;padding-left:8px;padding-right:8px}.topnav button{padding:10px 6px;font-size:11px}.yt-grid{gap:8px}}
+
+@media(min-width:650px){.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}}
+@media(min-width:950px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-height:650px){.video-frame{height:calc(100% - 82px);width:auto;max-width:90vw}.short-item{min-height:300px}.global-short{min-height:300px}}
+@media(max-width:360px){main{padding-left:10px;padding-right:10px}.grid{gap:8px}.card-info{padding:8px}.short-actions-row{gap:4px}.short-actions-row button{padding:7px 8px;font-size:10px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<header><div class="logo">RAAZ <b>OTT</b></div><div class="header-note">HORROR · MYSTERY · SHORT STORIES</div></header>
+<nav class="topnav" aria-label="मुख्य मेन्यू">
+<button id="tabHome" class="active" onclick="showTab('home')">🏠 Home</button>
+ <button id="tabYtShows" onclick="showTab('ytshows')">▶ YT Shows</button>
+<button id="tabShorts" onclick="showTab('shorts')">▶ Shorts</button>
+<button id="tabFavorites" onclick="showTab('favorites')">♥ Saved</button>
+</nav>
+<main id="homeView">
+<section class="hero"><div class="kicker">RAAZ ORIGINALS</div><h1>हर कहानी में छिपा है एक राज़।</h1><p>अपनी पसंद की हॉरर और मिस्ट्री सीरीज चुनें। हर कहानी के पार्ट Shorts की तरह देखें।</p></section>
+<div class="search-wrap"><input id="searchInput" type="search" placeholder="सीरीज या कहानी खोजें..." aria-label="सीरीज खोजें" oninput="renderSeries()"><button onclick="document.getElementById('searchInput').value='';renderSeries()">Clear</button></div>
+<div class="section-head"><div><div class="kicker">CONTINUE WATCHING</div><h2>हाल ही में देखी कहानियाँ</h2></div><button class="clear-history-btn" onclick="clearAllHistory()">✕ सब साफ करें</button></div>
+<div id="continueGrid" class="grid"></div>
+<div class="section-head"><div><div class="kicker">EXPLORE STORIES</div><h2>सभी सीरीज</h2></div><span class="muted" id="seriesCount">लोड हो रहा है…</span></div>
+<div id="seriesGrid" class="grid"></div><div id="homeStatus" class="status">सीरीज लोड हो रही हैं…</div>
+<div class="ad-slot">ADVERTISEMENT SPACE</div>
+</main>
+<main id="seriesView">
+<button class="secondary" onclick="showTab('home')">← सभी सीरीज</button>
+<div class="series-banner"><div class="mini-poster" id="seriesMiniPoster" role="button" tabindex="0" aria-label="सीरीज खोलें" onclick="if(activeSeries)openSeries(activeSeries.id)" onkeydown="if((event.key==='Enter'||event.key===' ')&&activeSeries){event.preventDefault();openSeries(activeSeries.id)}">◈</div><div><div class="kicker">RAAZ SERIES</div><h2 id="selectedSeriesName">सीरीज</h2><div class="muted" id="selectedSeriesDescription"></div></div></div>
+<div class="card-actions"><button class="small-btn" id="seriesSaveBtn" onclick="toggleSeriesFavorite()">♡ Save Series</button><button class="small-btn" onclick="shareCurrentSeries()">↗ Share Series</button></div>
+<div class="section-head"><div><div class="kicker">EPISODE LIST</div><h2>सभी पार्ट</h2></div></div>
+<div id="episodeList" class="episode-list"></div><div class="ad-slot">ADVERTISEMENT SPACE</div>
+</main>
+<main id="ytShowsView">
+ <div class="section-head"><div><div class="kicker">YOUTUBE HORROR STORIES</div><h2>YT Shows</h2></div><span class="muted" id="ytShowsCount">लोड हो रहा है…</span></div>
+ <div class="search-wrap"><input id="ytShowSearch" type="search" placeholder="हॉरर शो खोजें…" aria-label="YT Shows खोजें" oninput="renderYtShows()"></div>
+ <div id="ytShowsGrid" class="yt-grid"></div><div id="ytShowsStatus" class="status">YouTube Shows लोड हो रहे हैं…</div>
+</main>
+<main id="shortsFeedView">
+<div class="section-head"><div><div class="kicker">RAAZ SHORTS FEED</div><h2>सभी Shorts</h2></div><span class="muted" id="shortsCount">लोड हो रहा है…</span></div>
+<div id="shortsStatus" class="status">Shorts लोड हो रहे हैं…</div><div class="search-wrap"><input id="shortSearchInput" type="search" placeholder="Shorts खोजें..." aria-label="Shorts खोजें" oninput="renderGlobalShorts()"></div><div id="globalShortsFeed"></div>
+</main>
+<main id="favoritesView"><div class="section-head"><div><div class="kicker">YOUR COLLECTION</div><h2>Saved Series & Shorts</h2></div></div><div id="favoritesContent"></div></main>
+<section id="shortsView"><div class="shorts-head"><div><small id="shortsSeriesName">RAAZ SHORTS</small><strong>ऊपर/नीचे स्वाइप करें</strong></div><button class="secondary" onclick="closeShorts()">✕ बंद करें</button></div><div id="shortsFeed"></div></section>
+
+<section id="fullPlayer" aria-label="Full screen Shorts player" aria-hidden="true">
+  <div class="full-player-head">
+    <button type="button" onclick="closeFullPlayer()" aria-label="Back">←</button>
+    <strong id="fullPlayerTitle">RAAZ OTT · Shorts</strong>
+  </div>
+  <div id="fullPlayerFeed" aria-label="वीडियो सूची"></div>
+</section>
+<section id="ytShowModal" class="yt-play-modal" role="dialog" aria-modal="true" aria-label="YouTube video player" onclick="if(event.target===this)closeYtShow()">
+ <div class="yt-modal-box"><div class="yt-modal-head"><strong id="ytModalTitle">YT Show</strong><button type="button" onclick="closeYtShow()">✕ बंद करें</button></div><div class="yt-modal-video" id="ytModalVideo"></div><div class="yt-modal-desc" id="ytModalDesc"></div></div>
+</section>
+<footer id="footer">RAAZ OTT · Horror & Mystery Shorts</footer>
+<script>
+'use strict';
+
+/* Google Apps Script Web App URL: अपना /exec URL यहाँ रखें */
+const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbzogR5SqEAyTA3EtVHm4zN2z4iuFkf5jGfFvolZUaL-KxhRdwpBUIV85op6w5MgGRt0/exec";
+/* यदि Shorts के लिए अलग API हो तो URL डालें; खाली रहने पर मुख्य API से shorts पढ़ेगा */
+const SHORTS_API_URL = "";
+/* Publish URL (HTTPS) डालें ताकि दूसरे लोग भी shared link खोल सकें। */
+const SHARE_BASE_URL = "https://pyushkushwah531-cpu.github.io/Raaz-OTT/";
+const DEMO_SERIES = [{id:"RAAZ01",name:"आखिरी कमरा",description:"एक पुराने घर का कमरा, जिसके पीछे छिपा है एक अनजाना रहस्य।",poster_url:"",episodes:[{number:1,title:"बंद कमरा",description:"आखिरी कमरे का पहला रहस्य।",file_id:"1cAgQET6-NEjc8uWH6M8RaqDptsVbkmN2"}]}];
+const DEMO_SHORTS = [{id:"S1",title:"बंद कमरा",description:"आखिरी कमरे का पहला रहस्य।",file_id:"1cAgQET6-NEjc8uWH6M8RaqDptsVbkmN2",series_name:"आखिरी कमरा"}];
+let allSeries=[],allShorts=[],allYtShows=[],activeSeries=null,activeShorts=[],activeShortIndex=0;
+let globalObserver=null,seriesObserver=null,watchTimer=null,watchStartedAt=0,currentWatchKey=null,fullPlayerReturnUrl="";
+const $ = id => document.getElementById(id);
+const cssEscape = value => (window.CSS && typeof CSS.escape === "function") ? CSS.escape(String(value)) : String(value).replace(/[^a-zA-Z0-9_-]/g, ch => "\\"+ch);
+const safeGet = (k,d=null) => {try{const v=localStorage.getItem(k);return v===null?d:v;}catch(e){return d;}};
+const safeSet = (k,v) => {try{localStorage.setItem(k,String(v));return true;}catch(e){return false;}};
+const safeRemove = k => {try{localStorage.removeItem(k);}catch(e){}};
+
+let raazShortsTipTimer=null;
+function showShortsTipOnce(){
+  if(safeGet("raaz_shorts_tip_seen")==="1")return;
+  safeSet("raaz_shorts_tip_seen","1");
+  let tip=$("raazShortsTip");
+  if(!tip){
+    tip=document.createElement("div");
+    tip.id="raazShortsTip";
+    tip.setAttribute("role","status");
+    tip.textContent="वीडियो बदलने के लिए ऊपर/नीचे स्वाइप करें • ⛶ दबाकर फुल स्क्रीन देखें";
+    document.body.appendChild(tip);
+  }
+  requestAnimationFrame(()=>tip.classList.add("show"));
+  if(raazShortsTipTimer)clearTimeout(raazShortsTipTimer);
+  raazShortsTipTimer=setTimeout(()=>{tip.classList.remove("show");},4800);
+}
+
+const esc = v => String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const cleanId = v => String(v??"").trim();
+const drivePreview = id => "https://drive.google.com/file/d/"+encodeURIComponent(id)+"/preview";
+const validDriveId = id => /^[a-zA-Z0-9_-]{10,}$/.test(cleanId(id));
+function viewsKey(seriesName,epNo){return "s-"+String(seriesName).replace(/[^a-zA-Z0-9\u0900-\u097F]+/g,"-")+"-e"+epNo;}
+function shortViewsKey(short){
+ const series=allSeries.find(s=>s.name===short.series_name);
+ if(series){
+   let epNo=Number(short.episode_number||0);
+   if(!epNo && String(short.id).startsWith(series.id+"-"))epNo=Number(String(short.id).slice(series.id.length+1));
+   if(!epNo){const match=series.episodes.find(ep=>ep.file_id===short.file_id);if(match)epNo=Number(match.number);}
+   if(epNo && series.episodes.some(ep=>Number(ep.number)===epNo))return viewsKey(series.name,epNo);
+ }
+ return "short-"+String(short.id).replace(/[^a-zA-Z0-9_-]/g,"-");
+}
+function favoriteKey(type,id){return "fav_"+type+"_"+id;}
+function isFavorite(type,id){return safeGet(favoriteKey(type,id))==="1";}
+function setFavorite(type,id,on){on?safeSet(favoriteKey(type,id),"1"):safeRemove(favoriteKey(type,id));}
+function isLiked(id){return safeGet("like_"+id)==="1";}
+function localLikeCount(id){return Number(safeGet("like_count_"+id,"0"))||0;}
+function setLikeUI(id){
+ document.querySelectorAll('[data-like-id="'+cssEscape(String(id))+'"]').forEach(b=>{
+   const liked=isLiked(id);b.classList.toggle("liked",liked);b.setAttribute("aria-pressed",String(liked));
+   if(b.dataset.likeText==="yes")b.textContent=liked?"❤️ Liked":"❤️ Like";
+ });
+}
+// ===== VIEWS + LIKES - Google Sheet me (CountAPI hataya, Creator cheat nahi kar sakta) =====
+let viewsCache=null, viewsPromise=null;
+function getDeviceId(){let d=safeGet("raaz_device");if(!d){d="d-"+Math.random().toString(36).slice(2)+Date.now();safeSet("raaz_device",d);}return d;}
+function sessionSeen(key){try{return sessionStorage.getItem("raaz_view_"+key)==="1";}catch(e){return false;}}
+function markSessionSeen(key){try{sessionStorage.setItem("raaz_view_"+key,"1");}catch(e){}}
+async function fetchSheetViews(){
+  if(viewsCache) return viewsCache;
+  if(viewsPromise) return viewsPromise;
+  viewsPromise=(async()=>{
+    try{const r=await fetch(SHEET_API_URL+"?action=getViews",{cache:"no-store"});if(!r.ok)throw Error("Views API "+r.status);const j=await r.json();
+      if(j && typeof j==="object" && !Array.isArray(j) && (j.views||j.likes)){viewsCache={views:j.views||{},likes:j.likes||{}};return viewsCache;}
+      return {views:{},likes:{}};
+    }catch(e){return {views:{},likes:{}};}finally{viewsPromise=null;}
+  })();
+  return viewsPromise;
+}
+async function getViews(key){
+  const c=await fetchSheetViews();
+  if(c.views[key]!=null) return c.views[key];
+  return Number(safeGet("views_"+key,"0"))||0;
+}
+async function hitViews(key){
+  if(sessionSeen(key)) return getViews(key);
+  markSessionSeen(key);
+  try{
+    const r=await fetch(SHEET_API_URL+"?action=hit&key="+encodeURIComponent(key)+"&device="+encodeURIComponent(getDeviceId()),{cache:"no-store"});
+    const j=await r.json(); if(typeof j.value==="number"){safeSet("views_"+key,j.value); if(viewsCache) viewsCache.views[key]=j.value; return j.value;}
+  }catch(e){}
+  const next=(Number(safeGet("views_"+key,"0"))||0)+1; safeSet("views_"+key,next); return next;
+}
+async function toggleLike(id){
+  const was=isLiked(id);
+  if(was){safeRemove("like_"+id);safeSet("like_count_"+id,Math.max(0,localLikeCount(id)-1));}
+  else{
+    safeSet("like_"+id,"1");safeSet("like_count_"+id,localLikeCount(id)+1);
+    try{const r=await fetch(SHEET_API_URL+"?action=hitLike&key="+encodeURIComponent("like-"+id)+"&device="+encodeURIComponent(getDeviceId()));const j=await r.json(); if(typeof j.value==="number"){safeSet("like_count_"+id,j.value); if(viewsCache) viewsCache.likes["like-"+id]=j.value;}}
+    catch(e){}
+  }
+  setLikeUI(id);refreshLikeCounts(id);
+}
+function refreshLikeCounts(id){
+ document.querySelectorAll('[data-like-count="'+cssEscape(String(id))+'"]').forEach(e=>e.textContent=localLikeCount(id)+" likes");
+}
+function getShareBase(){
+  const configured=String(SHARE_BASE_URL||"").trim();
+  if(configured){
+    try{
+      const u=new URL(configured);
+      if(u.protocol==="https:"||u.protocol==="http:")return u;
+    }catch(e){}
+  }
+  if(location.protocol==="https:"||location.protocol==="http:"){
+    try{return new URL(location.href.split("#")[0]);}catch(e){}
+  }
+  return null;
+}
+function shareUrl(kind,id){
+  const base=getShareBase();
+  if(!base)return "";
+  base.hash=kind+"="+encodeURIComponent(String(id));
+  return base.toString();
+}
+async function copyTextFallback(text){
+  try{
+    if(navigator.clipboard && window.isSecureContext){
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  }catch(e){}
+  try{
+    const area=document.createElement("textarea");
+    area.value=text;
+    area.setAttribute("readonly","");
+    area.style.cssText="position:fixed;left:0;top:0;width:1px;height:1px;opacity:.01;font-size:16px";
+    document.body.appendChild(area);
+    area.focus();
+    area.select();
+    area.setSelectionRange(0,area.value.length);
+    const copied=document.execCommand("copy");
+    area.remove();
+    return copied;
+  }catch(e){return false;}
+}
+async function shareLink(title,url){
+  const cleanUrl=String(url||"").trim();
+  const text=cleanUrl
+    ? "RAAZ OTT पर देखें — "+title+" 👻\n"+cleanUrl
+    : "RAAZ OTT पर देखें — "+title+" 👻\n(सार्वजनिक वेबसाइट लिंक अभी सेट नहीं है।)";
+  const payload={title:"RAAZ OTT — "+title,text};
+  if(cleanUrl)payload.url=cleanUrl;
+
+  if(typeof navigator.share==="function"){
+    try{await navigator.share(payload);return true;}
+    catch(e){if(e && e.name==="AbortError")return false;}
+  }
+  const copied=await copyTextFallback(text);
+  if(copied){
+    alert(cleanUrl
+      ? "शेयर लिंक कॉपी हो गया। अब WhatsApp या किसी ऐप में पेस्ट करें।"
+      : "शेयर टेक्स्ट कॉपी हो गया। GitHub Pages का HTTPS URL सेट करना बाकी है।");
+    return true;
+  }
+  const wa="https://wa.me/?text="+encodeURIComponent(text);
+  try{
+    const a=document.createElement("a");
+    a.href=wa;a.target="_blank";a.rel="noopener";a.style.display="none";
+    document.body.appendChild(a);a.click();a.remove();
+    return true;
+  }catch(e){
+    alert("शेयर नहीं हो पाया। कृपया वेबसाइट का HTTPS लिंक कॉपी करके भेजें।");
+    return false;
+  }
+}
+function shareSeries(id){
+  const s=allSeries.find(x=>String(x.id)===String(id));
+  if(!s){alert("यह सीरीज नहीं मिली।");return;}
+  return shareLink(s.name,shareUrl("series",s.id));
+}
+function shareCurrentSeries(){
+  if(activeSeries && activeSeries.id)return shareSeries(activeSeries.id);
+  alert("पहले कोई सीरीज खोलें।");
+}
+function shareShort(id){
+  const s=allShorts.find(x=>String(x.id)===String(id))||activeShorts.find(x=>String(x.id)===String(id));
+  if(!s){alert("यह Short नहीं मिला।");return;}
+  let url="";
+  if(s.episode_number && activeSeries && activeSeries.id){
+    const base=getShareBase();
+    if(base){base.hash="episode="+encodeURIComponent(activeSeries.id+"~"+s.episode_number);url=base.toString();}
+  }else{
+    url=shareUrl("short",s.id);
+  }
+  return shareLink(s.title,url);
+}
+function normalizeSeries(data){
+ if(data&&Array.isArray(data.series))data=data.series;
+ if(!Array.isArray(data))return [];
+ if(data.length&&data[0]&&Array.isArray(data[0].episodes)){
+  return data.map((s,i)=>({id:cleanId(s.id||s.series_id||"SER"+(i+1)),name:String(s.name||s.series_name||"Untitled Series"),description:String(s.description||s.series_description||""),poster_url:String(s.poster_url||""),episodes:(s.episodes||[]).map((e,j)=>({number:Number(e.number||e.episode_no||j+1),title:String(e.title||e.episode_title||"Part "+(j+1)),description:String(e.description||e.episode_description||""),file_id:cleanId(e.file_id||e.drive_file_id)})).filter(e=>e.file_id).sort((a,b)=>a.number-b.number)})).filter(s=>s.episodes.length);
+ }
+ const groups={};
+ data.forEach(r=>{
+  if(String(r.published??"yes").toLowerCase()!=="yes")return;
+  const id=cleanId(r.series_id||"RAAZ01");
+  if(!groups[id])groups[id]={id,name:String(r.series_name||"Untitled Series"),description:String(r.series_description||""),poster_url:String(r.poster_url||""),episodes:[]};
+  const file=cleanId(r.drive_file_id||r.file_id);if(!file)return;
+  groups[id].episodes.push({number:Number(r.episode_no||r.number||groups[id].episodes.length+1),title:String(r.episode_title||r.title||"Part "+(groups[id].episodes.length+1)),description:String(r.episode_description||r.description||""),file_id:file});
+ });
+ return Object.values(groups).map(s=>({...s,episodes:s.episodes.sort((a,b)=>a.number-b.number)})).filter(s=>s.episodes.length);
+}
+function normalizeShorts(data){
+ if(data&&Array.isArray(data.shorts))data=data.shorts;
+ if(!Array.isArray(data))return [];
+ return data.filter(r=>String(r.published??"yes").toLowerCase()==="yes").map((r,i)=>({id:cleanId(r.short_id||r.id||"S"+(i+1)),title:String(r.short_title||r.title||"Short "+(i+1)),description:String(r.short_description||r.description||""),file_id:cleanId(r.drive_file_id||r.file_id),series_name:String(r.series_name||"")})).filter(s=>s.file_id);
+}
+const apiMemoryCache=new Map();
+async function fetchJson(url){
+ const cached=apiMemoryCache.get(url),now=Date.now();
+ if(cached && now-cached.time<60000)return cached.data;
+ const r=await fetch(url,{cache:"no-store"});
+ if(!r.ok)throw Error("Server response "+r.status);
+ const data=await r.json();apiMemoryCache.set(url,{time:now,data});return data;
+}
+async function loadSeries(){
+ $("homeStatus").textContent="Google Sheets से सीरीज लोड हो रही हैं…";
+ try{
+  if(!SHEET_API_URL.trim())throw Error("Google Sheets API URL खाली है");
+  let _sd=null; try{ _sd=await fetchJson(SHEET_API_URL+"?action=series"); }catch(e){ _sd=null; }
+  if(!_sd || (Array.isArray(_sd) && !_sd.length)) _sd=await fetchJson(SHEET_API_URL);
+  allSeries=normalizeSeries(_sd);
+  if(!allSeries.length)throw Error("शीट में Published episodes नहीं मिले");
+  $("homeStatus").textContent="Google Sheets से "+allSeries.length+" सीरीज लोड हुईं।";
+ }catch(e){allSeries=DEMO_SERIES;$("homeStatus").textContent="Sheets कनेक्शन में समस्या: "+e.message+" · Demo content दिखाया जा रहा है।";}
+ renderSeries();renderContinue();handleDeepLink();
+}
+async function loadShortsFeed(){
+ $("shortsStatus").textContent="Shorts लोड हो रहे हैं…";
+ try{
+  let data=null; try{ data=SHORTS_API_URL.trim()?await fetchJson(SHORTS_API_URL):await fetchJson(SHEET_API_URL+"?action=shorts"); }catch(e){ data=null; }
+  if(!data || (Array.isArray(data) && !data.length)) data=await fetchJson(SHEET_API_URL);
+  allShorts=normalizeShorts(data);
+  if(!allShorts.length){
+   allShorts=allSeries.flatMap(s=>s.episodes.map(ep=>({id:s.id+"-"+ep.number,title:ep.title,description:ep.description,file_id:ep.file_id,series_name:s.name,episode_number:ep.number})));
+   $("shortsStatus").textContent=allShorts.length?"अलग Shorts tab नहीं मिली; Series के Episodes दिखाए जा रहे हैं।":"अभी कोई Shorts उपलब्ध नहीं है।";
+  }else $("shortsStatus").textContent="Google Sheets से Shorts लोड हो गए।";
+ }catch(e){
+  allShorts=DEMO_SHORTS;$("shortsStatus").textContent="Shorts API में समस्या: "+e.message+" · Demo Short दिखाया जा रहा है।";
+ }
+ renderGlobalShorts();
+}
+function scoreShort(s){
+ const watch=Number(safeGet("watch_"+s.id,"0"))||0;
+ const liked=isLiked(s.id)?100:0;
+ const shared=safeGet("shared_"+s.id)==="1"?50:0;
+ const pref=Number(safeGet("pref_"+(s.series_name||""),"0"))||0;
+ return watch*2+liked+shared+pref;
+}
+function rankedShorts(){
+ const list=[...allShorts];
+ const scored=list.map(s=>({
+   s,
+   score: scoreShort(s) + (Math.random() * 25)
+ }));
+ scored.sort((a,b)=>b.score-a.score);
+ return scored.map(item=>item.s);
+}
+function renderSeries(){
+ const q=($("searchInput")?.value||"").trim().toLowerCase();
+ const filtered=allSeries.filter(s=>(s.name+" "+s.description).toLowerCase().includes(q));
+ $("seriesCount").textContent=filtered.length+" / "+allSeries.length+" सीरीज";
+ $("seriesGrid").innerHTML=filtered.length?filtered.map(s=>`
+ <article class="series-card">
+  <div class="poster" role="button" tabindex="0" aria-label="${esc(s.name)} खोलें" onclick="openSeries('${esc(s.id)}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openSeries('${esc(s.id)}')}">${s.poster_url?`<img src="${esc(s.poster_url)}" alt="${esc(s.name)} poster" loading="lazy" onload="this.nextElementSibling.style.display='none'" onerror="this.style.display='none'">`:""}<div class="poster-fallback"><div class="symbol">◈</div><strong>${esc(s.name)}</strong><small>RAAZ ORIGINAL</small></div></div>
+  <div class="card-info"><h3>${esc(s.name)}</h3><p>${esc(s.description||"एक नई रहस्यमयी कहानी।")}</p>
+   <div class="views" data-series-views="${esc(s.id)}">👁️ views लोड हो रहे हैं…</div>
+   <div class="card-actions"><button class="small-btn ${isFavorite("series",s.id)?"active":""}" onclick="toggleFavorite('series','${esc(s.id)}')">${isFavorite("series",s.id)?"♥ Saved":"♡ Save"}</button><button class="small-btn" onclick="shareSeries('${esc(s.id)}')">↗ Share</button><button class="small-btn" onclick="openSeries('${esc(s.id)}')">▶ देखें</button></div>
+   <div class="card-meta"><span>${s.episodes.length} PARTS</span><span>RAAZ ORIGINAL</span></div>
+  </div>
+ </article>`).join(""):'<div class="empty-state">कोई सीरीज नहीं मिली। दूसरा नाम खोजें।</div>';
+ refreshSeriesViews();
+}
+function refreshSeriesViews(){
+ document.querySelectorAll("[data-series-views]").forEach(async el=>{
+  const s=allSeries.find(x=>x.id===el.dataset.seriesViews);if(!s)return;
+  let total=0;for(const ep of s.episodes){try{total+=await getViews(viewsKey(s.name,ep.number));}catch(e){}}
+  el.innerHTML='👁️ <b>'+total.toLocaleString("en-IN")+'</b> total views';
+ });
+}
+function toggleFavorite(type,id){
+ setFavorite(type,id,!isFavorite(type,id));
+ renderSeries();renderFavorites();
+ if(activeSeries)updateSeriesSaveButton();
+}
+function toggleSeriesFavorite(){if(activeSeries)toggleFavorite("series",activeSeries.id);}
+function updateSeriesSaveButton(){
+ if(!activeSeries)return;const b=$("seriesSaveBtn");const saved=isFavorite("series",activeSeries.id);b.textContent=saved?"♥ Saved":"♡ Save Series";b.classList.toggle("active",saved);
+}
+function openSeries(id){
+ activeSeries=allSeries.find(s=>s.id===id);if(!activeSeries)return;
+ $("homeView").style.display="none";$("shortsFeedView").style.display="none";$("favoritesView").style.display="none";$("seriesView").style.display="block";$("footer").style.display="none";
+ $("selectedSeriesName").textContent=activeSeries.name;$("selectedSeriesDescription").textContent=activeSeries.description||"";
+ $("seriesMiniPoster").innerHTML=activeSeries.poster_url?`<img src="${esc(activeSeries.poster_url)}" alt="">`:"◈";
+ $("episodeList").innerHTML=activeSeries.episodes.map((ep,i)=>{const key=viewsKey(activeSeries.name,ep.number);return `
+ <div class="episode-row" onclick="openSeriesShorts(${i})"><div class="ep-number">${String(ep.number).padStart(2,"0")}</div><div class="ep-text"><strong>${esc(ep.title)}</strong><p>${esc(ep.description||"इस पार्ट को देखें।")}</p><div class="views" data-episode-views="${esc(key)}">👁️ लोड हो रहा है…</div></div><div class="play-icon">▶</div></div>`;}).join("");
+ updateSeriesSaveButton();refreshEpisodeViews();window.scrollTo(0,0);
+}
+async function refreshEpisodeViews(){
+ document.querySelectorAll("[data-episode-views]").forEach(async el=>{const v=await getViews(el.dataset.episodeViews);el.innerHTML='👁️ <b>'+v.toLocaleString("en-IN")+'</b> views';});
+}
+function removeHistory(key){
+  safeRemove("progress_"+key); safeRemove("watch_"+key);
+  if(safeGet("last_watch")===key) safeRemove("last_watch");
+  renderContinue();
+}
+function clearAllHistory(){
+  if(!confirm("सारी Watch History साफ कर दें?")) return;
+  allSeries.forEach(s=>s.episodes.forEach(ep=>{ const k=s.id+"_"+ep.number; safeRemove("progress_"+k); safeRemove("watch_"+k); }));
+  safeRemove("last_watch");
+  renderContinue();
+}
+function renderContinue(){
+ const entries=[];allSeries.forEach(s=>s.episodes.forEach((ep,i)=>{const key=s.id+"_"+ep.number;const last=Number(safeGet("progress_"+key,"0"))||0;if(last>0)entries.push({s,ep,i,last,key});}));
+ entries.sort((a,b)=>b.last-a.last);
+ $("continueGrid").innerHTML=entries.length?entries.slice(0,4).map(x=>`<article class="series-card history-card"><button class="remove-btn" title="History से हटाएँ" onclick="event.stopPropagation();removeHistory('${esc(x.key)}')">✕</button><div class="card-info"><div class="kicker">CONTINUE WATCHING</div><h3>${esc(x.s.name)} · ${esc(x.ep.title)}</h3><p>आपने यह पार्ट पहले देखा था।</p><div class="card-actions"><button class="small-btn" onclick="openSeriesShorts(${x.i},'${esc(x.s.id)}')">▶ फिर से देखें</button></div></div></article>`).join(""):'<div class="empty-state">अभी कोई देखी हुई कहानी नहीं है।</div>';
+}
+function startWatch(key,seriesName){
+ stopWatch();currentWatchKey=key;watchStartedAt=Date.now();
+ safeSet("last_watch",key);
+ safeSet("pref_"+seriesName,(Number(safeGet("pref_"+seriesName,"0"))||0)+1);
+ watchTimer=setInterval(()=>{if(currentWatchKey){const k="watch_"+key;safeSet(k,(Number(safeGet(k,"0"))||0)+1);safeSet("progress_"+key,Date.now());}},5000);
+}
+function stopWatch(){
+ if(watchTimer){clearInterval(watchTimer);watchTimer=null;}
+ if(currentWatchKey){safeSet("progress_"+currentWatchKey,Date.now());}
+ currentWatchKey=null;
+}
+function openSeriesShorts(index,seriesId){
+ if(seriesId){activeSeries=allSeries.find(s=>s.id===seriesId);}
+ if(!activeSeries)return;
+ activeShorts=activeSeries.episodes.map(ep=>({id:activeSeries.id+"-"+ep.number,watch_key:activeSeries.id+"_"+ep.number,title:ep.title,description:ep.description,file_id:ep.file_id,series_name:activeSeries.name,episode_number:ep.number}));
+ openShortsAt(index);
+}
+function openShortsAt(index){
+ if(!activeShorts.length)return;
+ showShortsTipOnce();
+ activeShortIndex=Math.max(0,Math.min(index,activeShorts.length-1));
+ $("shortsSeriesName").textContent=(activeSeries?.name||"RAAZ SHORTS")+" · RAAZ SHORTS";
+ $("shortsFeed").innerHTML=activeShorts.map((s,i)=>`<article class="short-item" id="episode-short-${i}" data-short-index="${i}">
+ <div class="short-label"><strong>${esc(s.title)}</strong><span>RAAZ SHORTS</span></div>
+ <div class="video-frame">${validDriveId(s.file_id)?`<div class="video-empty" data-video-placeholder>▶ वीडियो लोड करने के लिए स्क्रॉल करें</div><iframe data-src="${drivePreview(s.file_id)}" title="${esc(s.title)}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin" hidden></iframe><button class="fullscreen-icon-btn" type="button" aria-label="Full screen" onclick="openFullPlayer('${esc(s.file_id)}','${esc(s.title)}','series',${i})">⛶</button>`:'<div class="video-empty">वीडियो की Drive File ID गलत या खाली है।</div>'}</div>
+ <div class="short-caption">${esc(s.description||"")}</div>
+ <div class="short-bottom"><small>${esc(s.series_name||"RAAZ SHORTS")} · ${i+1}/${activeShorts.length} · <span data-ep-view="${esc(s.id)}">👁️ …</span></small><div class="short-actions-row"><button class="small-btn" data-like-id="${esc(s.id)}" data-like-text="yes" aria-pressed="${isLiked(s.id)}" onclick="toggleLike('${esc(s.id)}')">${isLiked(s.id)?"❤️ Liked":"❤️ Like"}</button><button class="small-btn" onclick="toggleFavorite('short','${esc(s.id)}')">${isFavorite("short",s.id)?"♥ Saved":"♡ Save"}</button><button class="secondary" onclick="shareShort('${esc(s.id)}')">↗</button></div></div>
+ </article>`).join("");
+ $("shortsView").style.display="block";document.body.style.overflow="hidden";
+ requestAnimationFrame(()=>{$("episode-short-"+activeShortIndex)?.scrollIntoView();mountNearbyPlayers($("shortsFeed"),".short-item",activeShortIndex);});
+ observeEpisodeShorts();
+}
+function mountNearbyPlayers(container,selector,index){
+ const cards=container.querySelectorAll(selector);
+ cards.forEach((card,i)=>{
+   const frame=card.querySelector("iframe[data-src],iframe[src]");if(!frame)return;
+   const shouldLoad=Math.abs(i-index)<=1;
+   if(shouldLoad){if(!frame.getAttribute("src"))frame.setAttribute("src",frame.dataset.src);frame.hidden=false;const ph=card.querySelector("[data-video-placeholder]");if(ph)ph.remove();}
+   else if(frame.getAttribute("src")){frame.removeAttribute("src");frame.hidden=true;}
+ });
+}
+function observeEpisodeShorts(){
+ if(seriesObserver)seriesObserver.disconnect();
+ const feed=$("shortsFeed");let fallbackTick=false;
+ const onActive=idx=>{
+   if(idx===activeShortIndex && currentWatchKey===((activeShorts[idx]||{}).watch_key||((activeShorts[idx]||{}).id)))return;
+   const s=activeShorts[idx];if(!s)return;activeShortIndex=idx;mountNearbyPlayers(feed,".short-item",idx);
+   startWatch(s.watch_key||s.id,s.series_name||"RAAZ SHORTS");
+   const viewKey=s.episode_number?viewsKey(s.series_name,s.episode_number):shortViewsKey(s);
+   hitViews(viewKey).then(v=>{const el=$("episode-short-"+idx)?.querySelector("[data-ep-view]");if(el)el.textContent="👁️ "+v.toLocaleString("en-IN");});
+ };
+ if("IntersectionObserver" in window){
+   seriesObserver=new IntersectionObserver(entries=>entries.forEach(en=>{if(en.isIntersecting&&en.intersectionRatio>=.55){const idx=Number(en.target.dataset.shortIndex);onActive(idx);}}),{root:feed,threshold:[.55,.7]});
+   feed.querySelectorAll(".short-item").forEach(n=>seriesObserver.observe(n));
+ }else{
+   const check=()=>{if(fallbackTick)return;fallbackTick=true;requestAnimationFrame(()=>{fallbackTick=false;let best=0,dist=Infinity;feed.querySelectorAll(".short-item").forEach((el,i)=>{const d=Math.abs(el.getBoundingClientRect().top-feed.getBoundingClientRect().top);if(d<dist){dist=d;best=i;}});onActive(best);});};
+   feed.addEventListener("scroll",check,{passive:true});check();
+ }
+}
+
+function openFullPlayer(fileId,title,scope,index){
+  const list=scope==="series"?activeShorts:(window.raazGlobalShortList||rankedShorts());
+  if(!validDriveId(fileId)||!list.length)return;
+  let startIndex=Number.isFinite(Number(index))?Number(index):list.findIndex(s=>s.file_id===fileId);
+  if(startIndex<0)startIndex=0;
+  window.raazFullPlayerList=list;
+  const feed=$("fullPlayerFeed");
+  feed.innerHTML=list.map((s,i)=>`<article class="full-player-item" data-full-index="${i}">
+    <div class="full-video-title">${esc(s.title||"RAAZ OTT")}</div>
+    ${validDriveId(s.file_id)?`<iframe data-full-src="${drivePreview(s.file_id)}" title="${esc(s.title||"RAAZ OTT")}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>`:'<div class="video-empty">यह वीडियो उपलब्ध नहीं है।</div>'}
+  </article>`).join("");
+  $("fullPlayerTitle").textContent=scope==="series"?(activeSeries?.name||"Series"):"RAAZ OTT · Shorts";
+  const player=$("fullPlayer");
+  player.classList.add("active");
+  player.setAttribute("aria-hidden","false");
+  document.body.classList.add("player-open");
+  document.querySelectorAll("#shortsFeed iframe,#globalShortsFeed iframe").forEach(f=>{
+    f.removeAttribute("src");f.hidden=true;
+  });
+  if(currentWatchKey)stopWatch();
+  requestAnimationFrame(()=>{
+    const target=feed.querySelector(`[data-full-index="${startIndex}"]`);
+    if(target)feed.scrollTop=target.offsetTop;
+    mountFullPlayerVideos(startIndex);
+  });
+  if(window.raazFullPlayerObserver)window.raazFullPlayerObserver.disconnect();
+  if("IntersectionObserver" in window){
+    window.raazFullPlayerObserver=new IntersectionObserver(entries=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting&&entry.intersectionRatio>=.5){
+          const idx=Number(entry.target.dataset.fullIndex);
+          mountFullPlayerVideos(idx);
+        }
+      });
+    },{root:feed,threshold:[.5,.7]});
+    feed.querySelectorAll(".full-player-item").forEach(el=>window.raazFullPlayerObserver.observe(el));
+  }else{
+    feed.onscroll=()=>{
+      const cards=[...feed.querySelectorAll(".full-player-item")];
+      let best=0,dist=Infinity;
+      cards.forEach((el,i)=>{const d=Math.abs(el.getBoundingClientRect().top-feed.getBoundingClientRect().top);if(d<dist){dist=d;best=i;}});
+      mountFullPlayerVideos(best);
+    };
+  }
+  fullPlayerReturnUrl=location.href;
+  try{history.pushState({raazPlayer:true},"","#player");}catch(e){}
+}
+function mountFullPlayerVideos(index){
+  const feed=$("fullPlayerFeed");
+  feed.querySelectorAll(".full-player-item").forEach((card,i)=>{
+    const frame=card.querySelector("iframe[data-full-src],iframe[src]");
+    if(!frame)return;
+    if(Math.abs(i-index)<=1){
+      if(!frame.getAttribute("src"))frame.setAttribute("src",frame.dataset.fullSrc);
+    }else if(frame.getAttribute("src")){
+      frame.removeAttribute("src");
+    }
+  });
+}
+function closeFullPlayer(){
+  const player=$("fullPlayer"),feed=$("fullPlayerFeed");
+  if(window.raazFullPlayerObserver)window.raazFullPlayerObserver.disconnect();
+  feed.onscroll=null;feed.innerHTML="";
+  player.classList.remove("active");
+  player.setAttribute("aria-hidden","true");
+  document.body.classList.remove("player-open");
+  if(location.hash==="#player"&&fullPlayerReturnUrl){try{history.replaceState({}, "", fullPlayerReturnUrl);}catch(e){}}
+}
+
+function closeShorts(){
+ stopWatch();if(seriesObserver)seriesObserver.disconnect();
+ $("shortsView").style.display="none";$("shortsFeed").innerHTML="";document.body.style.overflow="";
+ renderContinue();
+}
+function renderGlobalShorts(){
+ if(globalObserver)globalObserver.disconnect();
+ const query=($("shortSearchInput")?.value||"").trim().toLowerCase();
+ const list=rankedShorts().filter(s=>(s.title+" "+s.description+" "+s.series_name).toLowerCase().includes(query));window.raazGlobalShortList=list;$("shortsCount").textContent=list.length+" Shorts";
+ if(!list.length){$("globalShortsFeed").innerHTML='<div class="empty-state">अभी कोई Shorts उपलब्ध नहीं हैं।</div>';return;}
+ $("globalShortsFeed").innerHTML=list.map((s,i)=>`<article class="global-short" data-global-id="${esc(s.id)}" data-short-index="${i}">
+ <div class="global-short-head"><strong>${esc(s.title)}</strong><small>RAAZ SHORTS</small></div>
+ <div class="video-frame">${validDriveId(s.file_id)?`<div class="video-empty" data-video-placeholder>▶ वीडियो लोड करने के लिए स्क्रॉल करें</div><iframe data-src="${drivePreview(s.file_id)}" title="${esc(s.title)}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy" hidden></iframe><button class="fullscreen-icon-btn" type="button" aria-label="Full screen" onclick="openFullPlayer('${esc(s.file_id)}','${esc(s.title)}','global',${i})">⛶</button>`:'<div class="video-empty">Drive File ID गलत या खाली है।</div>'}</div>
+ <div class="global-short-foot"><p>${esc(s.description||"")}</p><div class="views" data-global-view="${esc(s.id)}">👁️ लोड हो रहा है…</div><small style="color:#aaa">${esc(s.series_name||"RAAZ SHORTS")}</small>
+ <div class="like-row"><button class="like-btn ${isLiked(s.id)?"liked":""}" data-like-id="${esc(s.id)}" data-like-text="yes" aria-pressed="${isLiked(s.id)}" onclick="toggleLike('${esc(s.id)}')">${isLiked(s.id)?"❤️ Liked":"❤️ Like"}</button><span class="views" data-like-count="${esc(s.id)}">${localLikeCount(s.id)} likes</span><button class="save-btn ${isFavorite("short",s.id)?"saved":""}" onclick="toggleFavorite('short','${esc(s.id)}')">${isFavorite("short",s.id)?"♥ Saved":"♡ Save"}</button><button class="share-btn" onclick="shareShort('${esc(s.id)}')">↗ Share</button></div></div>
+ </article>`).join("");
+ const feed=$("globalShortsFeed");
+ const onActive=idx=>{
+  const card=feed.querySelector('[data-short-index="'+idx+'"]');if(!card)return;
+  const s=list[idx];if(!s)return;mountNearbyPlayers(feed,".global-short",idx);
+  if(currentWatchKey!==s.id)startWatch(s.id,s.series_name||"RAAZ SHORTS");
+  if(!card.dataset.viewCounted){card.dataset.viewCounted="1";hitViews(shortViewsKey(s)).then(v=>{const el=card.querySelector("[data-global-view]");if(el)el.innerHTML='👁️ <b>'+v.toLocaleString("en-IN")+'</b> views';});}
+ };
+ if("IntersectionObserver" in window){
+  globalObserver=new IntersectionObserver(entries=>entries.forEach(en=>{if(en.isIntersecting&&en.intersectionRatio>=.55)onActive(Number(en.target.dataset.shortIndex));}),{root:feed,threshold:[.55,.7]});
+  feed.querySelectorAll(".global-short").forEach(n=>globalObserver.observe(n));
+ }else{
+  let tick=false;feed.addEventListener("scroll",()=>{if(tick)return;tick=true;requestAnimationFrame(()=>{tick=false;let best=0,dist=Infinity;feed.querySelectorAll(".global-short").forEach((el,i)=>{const d=Math.abs(el.getBoundingClientRect().top-feed.getBoundingClientRect().top);if(d<dist){dist=d;best=i;}});onActive(best);});},{passive:true});
+  onActive(0);
+ }
+ if(list.length)mountNearbyPlayers(feed,".global-short",0);
+}
+function renderFavorites(){
+ const series=allSeries.filter(s=>isFavorite("series",s.id));
+ const shorts=allShorts.filter(s=>isFavorite("short",s.id));
+ let out="";
+ if(series.length)out+='<h3>Saved Series</h3><div class="grid">'+series.map(s=>`<article class="series-card"><div class="card-info"><h3>${esc(s.name)}</h3><p>${esc(s.description)}</p><div class="card-actions"><button class="small-btn" onclick="openSeries('${esc(s.id)}')">▶ खोलें</button><button class="small-btn" onclick="toggleFavorite('series','${esc(s.id)}')">Remove</button></div></div></article>`).join("")+'</div>';
+ if(shorts.length)out+='<h3>Saved Shorts</h3><div class="episode-list">'+shorts.map(s=>`<div class="episode-row"><div class="ep-text"><strong>${esc(s.title)}</strong><p>${esc(s.series_name)}</p></div><button class="small-btn" onclick="playGlobalShort('${esc(s.id)}')">▶ देखें</button><button class="small-btn" onclick="toggleFavorite('short','${esc(s.id)}')">Remove</button></div>`).join("")+'</div>';
+ $("favoritesContent").innerHTML=out||'<div class="empty-state">अभी कुछ Saved नहीं है। Series या Shorts पर Save दबाएँ।</div>';
+}
+function playGlobalShort(id){
+ const s=allShorts.find(x=>x.id===id);if(!s)return;
+ activeSeries={name:s.series_name||"RAAZ SHORTS"};activeShorts=[s];openShortsAt(0);
+}
+function releaseGlobalPlayers(){
+ if(globalObserver)globalObserver.disconnect();
+ $("globalShortsFeed")?.querySelectorAll("iframe").forEach(frame=>{frame.removeAttribute("src");frame.hidden=true;});
+}
+
+function youtubeIdFrom(value){
+ const v=String(value||"").trim();
+ if(/^[a-zA-Z0-9_-]{11}$/.test(v))return v;
+ try{const u=new URL(v);
+  if(u.hostname.includes("youtu.be"))return u.pathname.split("/").filter(Boolean)[0]||"";
+  if(u.hostname.includes("youtube.com")||u.hostname.includes("youtube-nocookie.com")){
+   if(u.searchParams.get("v"))return u.searchParams.get("v");
+   const parts=u.pathname.split("/").filter(Boolean),i=parts.findIndex(x=>["embed","shorts","live"].includes(x));
+   if(i>=0)return parts[i+1]||"";
+  }
+ }catch(e){} return "";
+}
+function normalizeYtShows(data){
+ if(data&&Array.isArray(data.ytshows))data=data.ytshows;
+ if(data&&Array.isArray(data.ytShows))data=data.ytShows;
+ if(data&&Array.isArray(data.shows))data=data.shows;
+ if(!Array.isArray(data))return [];
+ return data.filter(r=>String(r.published??"yes").toLowerCase()==="yes").map((r,i)=>{
+  const link=String(r.youtube_url||r.video_url||r.embed_url||r.youtube_link||r.link||r.video_link||r.youtube_id||r.video_id||"").trim();
+  return {id:String(r.show_id||r.yt_show_id||r.id||"YT"+(i+1)),title:String(r.title||r.show_title||r.name||"Horror Story "+(i+1)),description:String(r.description||r.show_description||""),youtubeId:youtubeIdFrom(link),thumbnail:String(r.thumbnail_url||r.poster_url||r.thumbnail||"")};
+ }).filter(x=>x.youtubeId);
+}
+async function loadYtShows(){
+ $("ytShowsStatus").textContent="Google Sheets से YouTube Shows लोड हो रहे हैं…";
+ try{const data=await fetchJson(SHEET_API_URL+"?action=ytshows");allYtShows=normalizeYtShows(data);
+  $("ytShowsStatus").textContent=allYtShows.length?"Google Sheets से "+allYtShows.length+" YT Shows लोड हुए।":"शीट में Published YT Shows नहीं मिले।";
+ }catch(e){allYtShows=[];$("ytShowsStatus").textContent="YT Shows लोड नहीं हो पाए। Google Apps Script में action=ytshows उपलब्ध होना चाहिए।";}
+ renderYtShows();
+}
+function renderYtShows(){
+ const q=($("ytShowSearch")?.value||"").trim().toLowerCase(),list=allYtShows.filter(x=>(x.title+" "+x.description).toLowerCase().includes(q));
+ $("ytShowsCount").textContent=list.length+" Shows";
+ $("ytShowsGrid").innerHTML=list.length?list.map(x=>`
+ <article class="yt-card"><div class="yt-thumb" role="button" tabindex="0" aria-label="${esc(x.title)} चलाएं" onclick="openYtShow('${esc(x.id)}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openYtShow('${esc(x.id)}')}">
+ <img src="${esc(x.thumbnail||("https://img.youtube.com/vi/"+x.youtubeId+"/hqdefault.jpg"))}" alt="${esc(x.title)}" loading="lazy" onerror="this.src='https://img.youtube.com/vi/${esc(x.youtubeId)}/mqdefault.jpg'"></div>
+ <div class="yt-card-info"><h3>${esc(x.title)}</h3><p>${esc(x.description||"YouTube पर पूरी हॉरर कहानी देखें।")}</p></div></article>`).join(""):'<div class="empty-state">कोई YT Show नहीं मिला।</div>';
+}
+function openYtShow(id){
+ const show=allYtShows.find(x=>x.id===id);if(!show)return;
+ $("ytModalTitle").textContent=show.title;$("ytModalDesc").textContent=show.description||"";
+ $("ytModalVideo").innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(show.youtubeId)}?autoplay=1&rel=0" title="${esc(show.title)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
+ $("ytShowModal").classList.add("active");document.body.style.overflow="hidden";
+}
+function closeYtShow(){$("ytShowModal").classList.remove("active");$("ytModalVideo").innerHTML="";document.body.style.overflow="";}
+
+function showTab(tab){
+ stopWatch();closeShorts();if(tab!=="shorts")releaseGlobalPlayers();
+ ["homeView","seriesView","ytShowsView","shortsFeedView","favoritesView"].forEach(id=>$(id).style.display="none");
+ ["tabHome","tabYtShows","tabShorts","tabFavorites"].forEach(id=>$(id).classList.remove("active"));
+ $("footer").style.display=tab==="home"?"block":"none";
+ if(tab==="home"){$("homeView").style.display="block";$("tabHome").classList.add("active");}
+ if(tab==="ytshows"){$("ytShowsView").style.display="block";$("tabYtShows").classList.add("active");if(!allYtShows.length)loadYtShows();else renderYtShows();}
+ if(tab==="shorts"){showShortsTipOnce();$("shortsFeedView").style.display="block";$("tabShorts").classList.add("active");if(!allShorts.length)loadShortsFeed();else renderGlobalShorts();}
+ if(tab==="favorites"){$("favoritesView").style.display="block";$("tabFavorites").classList.add("active");renderFavorites();}
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+function handleDeepLink(){
+ let hash=location.hash.slice(1);if(!hash)return;
+  try{hash=decodeURIComponent(hash);}catch(e){hash=hash.replace(/%([0-9A-F]{0,1})$/i,"");}
+ if(hash.startsWith("series=")){const id=hash.slice(7);if(allSeries.some(s=>s.id===id))openSeries(id);}
+ if(hash.startsWith("short=")){
+  const id=hash.slice(6);const s=allShorts.find(x=>x.id===id);
+  if(s){activeSeries={name:s.series_name||"RAAZ SHORTS"};activeShorts=[s];openShortsAt(0);}
+ }
+ if(hash.startsWith("episode=")){
+  const parts=hash.slice(8).split("~");const series=allSeries.find(x=>x.id===parts[0]);
+  if(series){activeSeries=series;const index=series.episodes.findIndex(ep=>String(ep.number)===String(parts[1]));if(index>=0)openSeriesShorts(index,series.id);}
+ }
+}
+window.addEventListener("hashchange",handleDeepLink);
+window.addEventListener("pagehide",stopWatch);
+window.addEventListener("beforeunload",stopWatch);
+window.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("ytShowModal").classList.contains("active"))closeYtShow();else if(e.key==="Escape"&&$("fullPlayer").classList.contains("active"))closeFullPlayer();else if(e.key==="Escape"&&$("shortsView").style.display==="block")closeShorts();});
+window.addEventListener("popstate",()=>{if($("fullPlayer").classList.contains("active")){closeFullPlayer();}else if($("shortsView").style.display==="block")closeShorts();else showTab("home");});
+function updateViewportHeight(){document.documentElement.style.setProperty("--app-height",(window.innerHeight||document.documentElement.clientHeight)+"px");}
+updateViewportHeight();window.addEventListener("resize",updateViewportHeight,{passive:true});
+async function init(){
+ await loadSeries();
+ await loadShortsFeed();
+ renderContinue();
+ handleDeepLink();
+}
+init();
+</script>
+</body>
+</html>
